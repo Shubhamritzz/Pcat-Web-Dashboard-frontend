@@ -12,6 +12,12 @@ dist
 dist-ssr
 *.local
 
+# Environment Files
+.env            # The main .env file
+.env.local      # Local overrides (often used in development)
+.env.*.local    # Catches .env.development.local, .env.staging.local, etc.
+.env.* # Catches all other .env files (e.g., .env.development, .env.production)
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
