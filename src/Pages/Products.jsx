@@ -7,8 +7,9 @@ import Pagination from '../components/Pagination';
 
 function Products() {
     const [productData, setproductData] = useState([])
-    const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
+    const [deletingId, setDeletingId] = useState(null);
     const [open, setOpen] = useState(false);
     const [editingProduct, setEditingProduct] = useState(null);
     const [submenus, setSubmenus] = useState([]);
@@ -21,8 +22,8 @@ function Products() {
     const itemsPerPage = 8;
 
     useEffect(() => {
-    setCurrentPage(1);
-}, [searchTerm]);
+        setCurrentPage(1);
+    }, [searchTerm]);
 
     const tableHeaders = ['Category', 'Submenu', 'Title', 'Description', 'URL', 'Hover Image', 'View Image', 'Actions']
 
@@ -73,6 +74,7 @@ function Products() {
         }
 
         try {
+            setDeletingId(id);
             await api.delete(`/products/deleteproduct/${id}`);
             setproductData(prev => prev.filter(p => p._id !== id));
             toast.success("Product deleted successfully!");
@@ -80,13 +82,16 @@ function Products() {
             const errorMessage = error.response?.data?.message || "Delete failed";
             console.error("Error deleting product:", error);
             toast.error(`Deletion failed: ${errorMessage}`);
+        } finally {
+            setDeletingId(null);
         }
     };
 
+
     //. Filter the products by search term
     const filteredProducts = productData.filter((product) =>
-    product.title?.toLowerCase().includes(searchTerm.toLowerCase())
-);
+        product.title?.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
     // Pagination calculations
     const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
@@ -100,7 +105,7 @@ function Products() {
         }
     };
 
-    
+
 
     return (
         <div className="bg-gray-50 min-h-full rounded-2xl shadow-2xl p-6 md:p-10 border border-gray-100">
@@ -129,7 +134,7 @@ function Products() {
                 <div className="flex flex-wrap items-center gap-2">
                     <button
                         onClick={() => setOpen(true)}
-                        className="flex items-center justify-center bg-blue-600 text-white px-6 py-3 rounded-xl font-semibold shadow-lg shadow-blue-300/50 hover:bg-blue-700 transition duration-200 transform hover:scale-[1.02] focus:outline-none focus:ring-4 focus:ring-blue-300">
+                        className="flex items-center justify-center bg-blue-600 text-white px-6 py-3 rounded-xl font-semibold shadow-lg shadow-blue-300/50 hover:bg-blue-700 transition duration-200 transform hover:scale-[1.02] focus:outline-none focus:ring-4 focus:ring-blue-300 cursor-pointer">
                         <Plus className="w-5 h-5" />
                         <span className="ml-2">Add New Product</span>
                     </button>
@@ -203,16 +208,22 @@ function Products() {
                                                 setEditingProduct(product);
                                                 setOpen(true);
                                             }}
-                                            className="p-2 text-blue-600 bg-blue-100 rounded-full hover:bg-blue-200 transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            className="p-2 text-blue-600 bg-blue-100 rounded-full hover:bg-blue-200 transition-colors shadow-sm focus:outline-none focus:ring-2 cursor-pointer focus:ring-blue-500"
                                             title="Edit Product"
                                         >
                                             <Edit className="w-5 h-5" />
                                         </button>
                                         <button
                                             onClick={() => handleDeleteProduct(product._id)}
-                                            className="p-2 text-red-600 bg-red-100 rounded-full hover:bg-red-200 transition-colors shadow-sm focus:outline-none focus:ring-2 cursor-pointer focus:ring-red-500"
+                                            className="p-2 text-red-600 bg-red-100 rounded-full hover:bg-red-200 transition-colors shadow-sm focus:outline-none focus:ring-2 cursor-pointer focus:ring-red-500 "
                                             title="Delete Product">
-                                            <Trash2 className="w-5 h-5" />
+                                            {deletingId === product._id ? (
+                                                <Loader2 className="w-5 h-5 inline-block cursor-not-allowed animate-spin" />
+                                            ) : (
+                                                <Trash2 className="w-5 h-5" />
+                                            )}
+
+
                                         </button>
                                     </td>
                                 </tr>

@@ -208,7 +208,7 @@ export default function ProductModel({ isOpen, onClose, fetchProducts, editingPr
                         onClick={onClose}
                         className="p-2 text-gray-500 hover:text-red-600 bg-gray-100 rounded-full hover:bg-red-50 transition-colors"
                     >
-                        <X className="w-5 h-5" />
+                        <X className="w-5 h-5 cursor-pointer" />
                     </button>
                 </div>
 
@@ -322,7 +322,7 @@ export default function ProductModel({ isOpen, onClose, fetchProducts, editingPr
                                 onClose(),
                                 toast.info('Edit mode cancelled. Changes were not saved.')
                             }}
-                            className="px-6 py-2.5 text-gray-700 border border-gray-300 rounded-full hover:bg-gray-100 transition font-medium"
+                            className={`px-6 py-2.5 text-gray-700 border border-gray-300 rounded-full hover:bg-gray-100 transition font-medium ${sending ? ' cursor-not-allowed': 'cursor-pointer'} `}
                         >
                             Cancel
                         </button>
@@ -330,7 +330,7 @@ export default function ProductModel({ isOpen, onClose, fetchProducts, editingPr
                         <button
                             type="submit"
                             disabled={sending}
-                            className={`px-6 py-2.5 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition font-semibold shadow-lg flex items-center gap-1 ${sending && 'cursor-not-allowed'} `}
+                            className={`px-6 py-2.5 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition font-semibold shadow-lg flex items-center gap-1 ${sending ? 'cursor-not-allowed' :'cursor-pointer'} `}
                         >
                             {sending ? "Saving..." : (
                                 <>

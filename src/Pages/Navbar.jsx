@@ -8,7 +8,8 @@ import {
     Save,
     X,
     Pencil,
-    Zap
+    Zap,
+    Loader2
 } from 'lucide-react';
 import { toast } from "react-toastify";
 import Section from "../components/Section";
@@ -245,7 +246,7 @@ function Navbar() {
         }
     };
 
-    if (Object.keys(formData).length === 0) return <div className="p-6 text-center text-xl text-gray-500">Loading Navbar ...</div>;
+    if (Object.keys(formData).length === 0) return <div className="p-6 text-center text-xl text-gray-500"><Loader2 className="w-6 h-6 inline-block animate-spin mr-2" />Loading Navbar ...</div>;
 
     return (
         <div className="bg-gray-50 min-h-screen rounded-2xl shadow-xl p-6 md:p-10 border border-gray-100">
