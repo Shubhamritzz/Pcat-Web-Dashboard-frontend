@@ -5,15 +5,15 @@ import {
   Users,
   FileText,
   LogOut,
-  ChevronDown
+  ChevronDown,
+  Layers
 } from 'lucide-react';
 
 
 const Sidebar = () => {
   const navItems = [
     { name: 'Navbar', icon: LayoutDashboard, to: '/navbar' },
-    { name: 'Vendors', icon: Users, to: '/das' },
-    { name: 'Leads', icon: FileText, to: '/dashboard' },
+    { name: 'Products', icon: Layers, to: '/products' },
   ];
 
  const [activeItem, setActiveItem] = useState('Navbar');

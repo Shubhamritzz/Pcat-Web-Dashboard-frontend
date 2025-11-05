@@ -4,7 +4,7 @@ import { Outlet } from 'react-router-dom'
 
 function MainLayou() {
     return (
-        <div className="flex">
+        <div className="flex w-full overflow-hidden">
 
             <Sidebar />
 
