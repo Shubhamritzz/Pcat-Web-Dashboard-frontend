@@ -14,6 +14,7 @@ const Sidebar = () => {
   const navItems = [
     { name: 'Navbar', icon: LayoutDashboard, to: '/navbar' },
     { name: 'Products', icon: Layers, to: '/products' },
+    { name: 'Seo', icon: Layers, to: '/seo' },
   ];
 
  const [activeItem, setActiveItem] = useState('Navbar');

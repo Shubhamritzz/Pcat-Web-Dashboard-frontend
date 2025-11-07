@@ -9,6 +9,7 @@ import Navbar from "./Pages/Navbar";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Products from "./Pages/Products";
+import Seo from "./Pages/Seo";
 
 
 
@@ -39,6 +40,7 @@ function App() {
           <Route index element={<Navigate to="/navbar" replace />} />
           <Route path="/navbar" element={<Navbar />} />
           <Route path="/products" element={<Products />} />
+          <Route path="/seo" element={<Seo />} />
 
         </Route>
       </Routes>
