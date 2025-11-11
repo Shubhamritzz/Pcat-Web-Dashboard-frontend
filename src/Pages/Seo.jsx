@@ -14,6 +14,7 @@ import {
     Globe,
     Tag,
     Code,
+    Layers,
 } from "lucide-react";
 
 
@@ -367,27 +368,43 @@ const Seo = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-orange-50 p-6">
+        <div className="bg-gray-50 min-h-full rounded-2xl shadow-2xl p-6 md:p-10 border border-gray-100">
             <div className="max-w-7xl mx-auto">
                 {/* Header */}
-                <div className="bg-white rounded-xl shadow-lg p-6 mb-8 border-l-4 border-yellow-600">
-                    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                        <div>
-                            <h1 className="text-3xl font-bold text-gray-800 mb-2">
-                                SEO Management
-                            </h1>
-                            <p className="text-gray-600">
-                                Manage SEO settings for your pages
-                            </p>
-                        </div>
+                <div className=" ">
+                    <div className="flex flex-col md:flex-row md:items-center mb-4 md:justify-between gap-4 ">
+                        <header className="flex items-center gap-4 mb-4 pb-4 border-b border-blue-100 w-full">
 
-                        <div className="flex flex-col sm:flex-row gap-4">
+                            <h2 className="text-2xl md:text-4xl font-bold text-gray-800">
+                                Seo Management
+                            </h2>
+                        </header>
+                    </div>
+                    <div className="flex justify-between flex-col sm:flex-row gap-4">
+
+                        <div className=" flex gap-4">
+
+
+                            {/* Search */}
+                            <div className="relative flex-grow md:flex-grow-0 md:w-80">
+                                <input
+                                    type="search"
+                                    placeholder="Search products..."
+                                    className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all shadow-sm text-gray-700"
+                                    value={searchTerm}
+                                    onChange={(e) => handleSearch(e.target.value)}
+                                />
+                                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400">
+                                    <Search className="w-5 h-5" />
+                                </div>
+                            </div>
+
                             {/* Status Filter */}
                             <div className="relative">
                                 <select
                                     value={selectedStatus}
                                     onChange={(e) => handleStatusFilter(e.target.value)}
-                                    className="appearance-none bg-white border border-gray-300 rounded-lg px-4 py-2 pr-8 focus:ring-2 focus:ring-yellow-600 focus:border-yellow-600"
+                                    className="appearance-none bg-white border border-gray-300 rounded-lg px-4 py-2 pr-8 focus:ring-2 focus:ring-blue-600 focus:border-blue-600"
                                 >
                                     <option value="">All Status</option>
                                     <option value="active">Active</option>
@@ -395,49 +412,37 @@ const Seo = () => {
                                 </select>
                                 <ChevronDown className="absolute right-2 top-1/3 transform -translate-y-1/2 text-gray-400 w-5 h-5 pointer-events-none" />
                             </div>
-
-                            {/* Search */}
-                            <div className="relative">
-                                <Search className="absolute left-3 top-1/3 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                                <input
-                                    type="text"
-                                    placeholder="Search pages..."
-                                    value={searchTerm}
-                                    onChange={(e) => handleSearch(e.target.value)}
-                                    className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-600 focus:border-yellow-600 w-full sm:w-64"
-                                />
-                            </div>
-
-                            {/* Add Button */}
-                            <button
-                                onClick={() => openModal()}
-                                className="bg-gradient-to-r from-yellow-600 to-orange-600 hover:from-yellow-600 hover:to-orange-700 text-white px-6 py-2 rounded-lg font-medium flex items-center gap-2 transition-all duration-200 shadow-lg hover:shadow-xl"
-                            >
-                                <Plus className="w-5 h-5" />
-                                Add SEO Page
-                            </button>
                         </div>
+                        {/* Add Button */}
+                        <button
+                            onClick={() => openModal()}
+                            className="bg-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-6 py-2 rounded-lg font-medium flex items-center gap-2 transition-all duration-200 shadow-lg hover:shadow-xl cursor-pointer"
+                        >
+                            <Plus className="w-5 h-5" />
+                            Add SEO Page
+                        </button>
                     </div>
+
                 </div>
 
                 {/* Table */}
-                <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+                <div className="bg-white rounded-xl shadow-lg overflow-hidden mt-6">
                     <div className="overflow-x-auto">
                         <table className="w-full">
-                            <thead className="bg-gradient-to-r from-orange-600 to-yellow-600 text-white">
+                            <thead className="bg-blue-50/70 text-blue-500">
                                 <tr>
-                                    <th className="px-6 py-4 text-left font-semibold">Icon</th>
-                                    <th className="px-6 py-4 text-left font-semibold">
+                                    <th className="px-6 py-4 text-left font-bold">Icon</th>
+                                    <th className="px-6 py-4 text-left font-bold">
                                         Page Name
                                     </th>
-                                    <th className="px-6 py-4 text-left font-semibold">
+                                    <th className="px-6 py-4 text-left font-bold">
                                         Page Slug
                                     </th>
-                                    <th className="px-6 py-4 text-left font-semibold">
+                                    <th className="px-6 py-4 text-left font-bold">
                                         SEO Title
                                     </th>
-                                    <th className="px-6 py-4 text-left font-semibold">Status</th>
-                                    <th className="px-6 py-4 text-left font-semibold">Actions</th>
+                                    <th className="px-6 py-4 text-left font-bold">Status</th>
+                                    <th className="px-6 py-4 text-left font-bold">Actions</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-200">
@@ -445,7 +450,7 @@ const Seo = () => {
                                     <tr>
                                         <td colSpan="6" className="px-6 py-12 text-center">
                                             <div className="flex justify-center items-center">
-                                                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-yellow-600"></div>
+                                                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
                                             </div>
                                         </td>
                                     </tr>
@@ -462,7 +467,7 @@ const Seo = () => {
                                     seoPages.map((seoPage) => (
                                         <tr
                                             key={seoPage._id}
-                                            className="hover:bg-yellow-50 transition-colors"
+                                            className="hover:bg-blue-50/30 transition-colors"
                                         >
                                             <td className="px-6 py-4">
                                                 {seoPage.seo.icon ? (
@@ -470,7 +475,7 @@ const Seo = () => {
                                                         <img
                                                             src={seoPage.seo.icon}
                                                             alt={seoPage.page_name}
-                                                            className="w-12 h-12 object-cover rounded-lg border-2 border-yellow-200"
+                                                            className="w-12 h-12 object-cover rounded-lg border-2 border-blue-200"
                                                         />
                                                         <button
                                                             onClick={() => handleRemoveIcon(seoPage._id)}
@@ -486,15 +491,14 @@ const Seo = () => {
                                                 )}
                                             </td>
                                             <td className="px-6 py-4">
-                                                <div className="font-medium text-gray-900">
+                                                <div className="font-medium text-blue-500">
                                                     {seoPage.page_name}
                                                 </div>
                                             </td>
-                                            <td className="px-6 py-4">
-                                                <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800">
-                                                    <Globe className="w-4 h-4 mr-1" />
+                                            <td className="p-4 text-sm text-blue-500 whitespace-nowrap">
+                                                <p target="_blank" rel="noopener noreferrer" className="hover:underline">
                                                     {seoPage.page_slug}
-                                                </span>
+                                                </p>
                                             </td>
                                             <td className="px-6 py-4">
                                                 <div className="text-sm text-gray-900 max-w-xs truncate">
@@ -504,8 +508,8 @@ const Seo = () => {
                                             <td className="px-6 py-4">
                                                 <span
                                                     className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${seoPage.status === "active"
-                                                            ? "bg-green-100 text-green-800"
-                                                            : "bg-red-100 text-red-800"
+                                                        ? "bg-green-100 text-green-800"
+                                                        : "bg-red-100 text-red-800"
                                                         }`}
                                                 >
                                                     {seoPage.status === "active" ? (
@@ -525,17 +529,17 @@ const Seo = () => {
                                                 <div className="flex gap-2">
                                                     <button
                                                         onClick={() => openModal(seoPage)}
-                                                        className="p-2 text-yellow-600 hover:bg-yellow-50 rounded-lg transition-colors"
+                                                        className="p-2 text-blue-600 bg-blue-100 rounded-full hover:bg-blue-200 transition-colors shadow-sm focus:outline-none focus:ring-2 cursor-pointer focus:ring-blue-500"
                                                         title="Edit"
                                                     >
-                                                        <Edit className="w-4 h-4" />
+                                                        <Edit className="w-5 h-5" />
                                                     </button>
                                                     <button
                                                         onClick={() => handleDelete(seoPage._id)}
-                                                        className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                                                        className="p-2 text-red-600 bg-red-100 rounded-full hover:bg-red-200 transition-colors shadow-sm focus:outline-none focus:ring-2 cursor-pointer focus:ring-red-500"
                                                         title="Delete"
                                                     >
-                                                        <Trash2 className="w-4 h-4" />
+                                                        <Trash2 className="w-5 h-5" />
                                                     </button>
                                                 </div>
                                             </td>
@@ -569,7 +573,7 @@ const Seo = () => {
                                     >
                                         Previous
                                     </button>
-                                    <span className="px-3 py-1 text-sm bg-yellow-600 text-white rounded-md">
+                                    <span className="px-3 py-1 text-sm bg-blue-600 text-white rounded-md">
                                         {pagination.currentPage}
                                     </span>
                                     <button
@@ -593,16 +597,16 @@ const Seo = () => {
 
                 {/* Modal */}
                 {showModal && (
-                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+                    <div className="fixed inset-0 bg-black/50 bg-opacity-50 flex items-center justify-center p-4 z-50">
                         <div className="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
-                            <div className="bg-gradient-to-r from-orange-600 to-yellow-600 text-white p-6 rounded-t-xl">
+                            <div className="bg-blue-600 text-white p-6 rounded-t-xl">
                                 <div className="flex items-center justify-between">
                                     <h2 className="text-xl font-bold">
                                         {editMode ? "Edit SEO Page" : "Add SEO Page"}
                                     </h2>
                                     <button
                                         onClick={closeModal}
-                                        className="text-white hover:bg-white hover:bg-opacity-20 rounded-full p-1 transition-colors"
+                                        className="text-white hover:text-black cursor-pointer hover:bg-white hover:bg-opacity-20 rounded-full p-1 transition-colors"
                                     >
                                         <X className="w-6 h-6" />
                                     </button>
@@ -622,7 +626,7 @@ const Seo = () => {
                                             onChange={(e) =>
                                                 setFormData({ ...formData, page_name: e.target.value })
                                             }
-                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-600 focus:border-yellow-600"
+                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-blue-600"
                                             placeholder="e.g., Home Page, About Us, Contact"
                                             required
                                         />
@@ -639,7 +643,7 @@ const Seo = () => {
                                             onChange={(e) =>
                                                 setFormData({ ...formData, page_slug: e.target.value })
                                             }
-                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-600 focus:border-yellow-600"
+                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-blue-600"
                                             placeholder="e.g., /home, /about-us, /contact"
                                             required
                                         />
@@ -657,7 +661,7 @@ const Seo = () => {
                                         onChange={(e) =>
                                             setFormData({ ...formData, seo_title: e.target.value })
                                         }
-                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-600 focus:border-yellow-600"
+                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-blue-600"
                                         placeholder="e.g., Best Leather Products | Your Brand Name"
                                         required
                                     />
@@ -676,7 +680,7 @@ const Seo = () => {
                                                 seo_description: e.target.value,
                                             })
                                         }
-                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-600 focus:border-yellow-600"
+                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-blue-600"
                                         rows="3"
                                         placeholder="e.g., Discover premium leather products crafted with excellence. Shop our collection of bags, wallets, and accessories with fast shipping and quality guarantee."
                                         required
@@ -694,7 +698,7 @@ const Seo = () => {
                                         onChange={(e) =>
                                             setFormData({ ...formData, canonical: e.target.value })
                                         }
-                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-600 focus:border-yellow-600"
+                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-blue-600"
                                         placeholder="e.g., https://yourdomain.com/page-url"
                                     />
                                 </div>
@@ -710,7 +714,7 @@ const Seo = () => {
                                                 <img
                                                     src={iconPreview}
                                                     alt="Preview"
-                                                    className="w-16 h-16 object-cover rounded-lg border-2 border-yellow-200"
+                                                    className="w-16 h-16 object-cover rounded-lg border-2 border-blue-200"
                                                 />
                                                 <button
                                                     type="button"
@@ -766,7 +770,7 @@ const Seo = () => {
                                                         google_site_verification_name: e.target.value,
                                                     })
                                                 }
-                                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-600 focus:border-yellow-600"
+                                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-blue-600"
                                                 placeholder="google-site-verification"
                                             />
                                         </div>
@@ -783,7 +787,7 @@ const Seo = () => {
                                                         google_site_verification_content: e.target.value,
                                                     })
                                                 }
-                                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-600 focus:border-yellow-600"
+                                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-blue-600"
                                                 placeholder="your-verification-code"
                                             />
                                         </div>
@@ -800,7 +804,7 @@ const Seo = () => {
                                         <button
                                             type="button"
                                             onClick={() => addMetaTag("og")}
-                                            className="px-3 py-1 bg-yellow-600 text-white rounded-md hover:bg-yellow-600 transition-colors text-sm"
+                                            className="px-3 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-600 transition-colors text-sm"
                                         >
                                             Add OG Tag
                                         </button>
@@ -863,7 +867,7 @@ const Seo = () => {
                                         <button
                                             type="button"
                                             onClick={() => addMetaTag("twitter")}
-                                            className="px-3 py-1 bg-yellow-600 text-white rounded-md hover:bg-yellow-600 transition-colors text-sm"
+                                            className="px-3 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-600 transition-colors text-sm"
                                         >
                                             Add Twitter Tag
                                         </button>
@@ -935,7 +939,7 @@ const Seo = () => {
                                                         google_tag_manager_header: e.target.value,
                                                     })
                                                 }
-                                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-600 focus:border-yellow-600"
+                                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-blue-600"
                                                 rows="3"
                                                 placeholder="<!-- Google Tag Manager --> script goes here"
                                             />
@@ -952,7 +956,7 @@ const Seo = () => {
                                                         google_tag_manager_body: e.target.value,
                                                     })
                                                 }
-                                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-600 focus:border-yellow-600"
+                                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-blue-600"
                                                 rows="3"
                                                 placeholder="<!-- Google Tag Manager (noscript) --> script goes here"
                                             />
@@ -979,7 +983,7 @@ const Seo = () => {
                                                         sitemap_loc: e.target.value,
                                                     })
                                                 }
-                                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-600 focus:border-yellow-600"
+                                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-blue-600"
                                                 placeholder="https://yourdomain.com/page-url"
                                                 required
                                             />
@@ -1000,7 +1004,7 @@ const Seo = () => {
                                                         sitemap_priority: parseFloat(e.target.value),
                                                     })
                                                 }
-                                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-600 focus:border-yellow-600"
+                                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-blue-600"
                                             />
                                         </div>
                                         <div>
@@ -1015,7 +1019,7 @@ const Seo = () => {
                                                         sitemap_changefreq: e.target.value,
                                                     })
                                                 }
-                                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-600 focus:border-yellow-600"
+                                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-blue-600"
                                             >
                                                 <option value="always">Always</option>
                                                 <option value="hourly">Hourly</option>
@@ -1043,7 +1047,7 @@ const Seo = () => {
                                                 onChange={() =>
                                                     setFormData({ ...formData, status: "active" })
                                                 }
-                                                className="mr-2 text-yellow-600 focus:ring-yellow-600"
+                                                className="mr-2 text-blue-600 focus:ring-blue-600"
                                             />
                                             Active
                                         </label>
@@ -1055,7 +1059,7 @@ const Seo = () => {
                                                 onChange={() =>
                                                     setFormData({ ...formData, status: "inactive" })
                                                 }
-                                                className="mr-2 text-yellow-600 focus:ring-yellow-600"
+                                                className="mr-2 text-blue-600 focus:ring-blue-600"
                                             />
                                             Inactive
                                         </label>
@@ -1074,7 +1078,7 @@ const Seo = () => {
                                     <button
                                         type="submit"
                                         disabled={loading}
-                                        className="flex-1 bg-gradient-to-r from-orange-600 to-yellow-600 hover:from-orange-700 hover:to-yellow-700 text-white px-4 py-2 rounded-lg font-medium transition-all duration-200 disabled:opacity-50"
+                                        className="flex-1 bg-gradient-to-r from-blue-600 to-blue-600 hover:from-blue-700 hover:to-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-all duration-200 disabled:opacity-50"
                                     >
                                         {loading ? "Saving..." : editMode ? "Update" : "Create"}
                                     </button>
