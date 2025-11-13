@@ -21,7 +21,7 @@ function Login() {
 
     // stop the user to go back after login on go to login after logout
     useEffect(() => {
-        const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+        const isLoggedIn = sessionStorage.getItem("isLoggedIn") === "true";
         if (isLoggedIn) {
             navigate("/navbar");
         }
@@ -38,7 +38,7 @@ function Login() {
             // console.log("Response from backend:", res);
             seterror('')
             if (res.data.success) {
-                localStorage.setItem("isLoggedIn", "true");
+                sessionStorage.setItem("isLoggedIn", "true");
                 navigate('/navbar')
             } else {
                 seterror(res.data.message || "Login failed");

@@ -31,8 +31,8 @@ export default function ProductModel({ isOpen, onClose, fetchProducts, editingPr
             setForm({
                 title: editingProduct.title || "",
                 description: editingProduct.description || "",
-                categoryTitle: editingProduct.categoryTitle || "",
-                submenuTitle: editingProduct.submenuTitle || "",
+                categoryTitle: editingProduct.category || "",
+                submenuTitle: editingProduct.submenu || "",
                 url: editingProduct.url || "",
                 viewImagePreview: editingProduct.viewImage || null,
                 hoverImagePreview: editingProduct.hoverImage || null,
@@ -67,14 +67,14 @@ export default function ProductModel({ isOpen, onClose, fetchProducts, editingPr
     }, [form.categoryTitle, submenus]);
 
     // Auto-select submenu when editing and category/submenu exist
-    // useEffect(() => {
-    //     if (editingProduct && editingProduct.categoryTitle) {
-    //         const relatedSubmenus = submenus.filter(
-    //             (sub) => sub.parent === editingProduct.categoryTitle
-    //         );
-    //         setFilteredSubmenus(relatedSubmenus);
-    //     }
-    // }, [submenus, editingProduct]);
+    useEffect(() => {
+        if (editingProduct && editingProduct.categoryTitle) {
+            const relatedSubmenus = submenus.filter(
+                (sub) => sub.parent === editingProduct.categoryTitle
+            );
+            setFilteredSubmenus(relatedSubmenus);
+        }
+    }, [submenus, editingProduct]);
 
     const handleChanges = (id, value) => {
         setForm((prev) => ({ ...prev, [id]: value }));
@@ -202,7 +202,7 @@ export default function ProductModel({ isOpen, onClose, fetchProducts, editingPr
                 <div className="flex justify-between items-center mb-6 border-b pb-4 border-blue-100">
                     <h2 className="text-2xl font-extrabold text-blue-700 flex items-center gap-3">
                         <Edit className="w-6 h-6" />
-                        {editingProduct ? "Edit Product" : "Add New Product"}
+                        {editingProduct ? "Edit Product [You can't change category and submenu]" : "Add New Product"}
                     </h2>
                     <button
                         onClick={onClose}

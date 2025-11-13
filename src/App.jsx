@@ -34,7 +34,7 @@ function App() {
           element={
             <ProtectedRoute>
               <MainLayou />
-            </ProtectedRoute>
+             </ProtectedRoute>
           }
         >
           <Route index element={<Navigate to="/navbar" replace />} />

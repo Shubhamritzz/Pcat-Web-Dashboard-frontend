@@ -2,7 +2,7 @@
 import { Navigate } from "react-router-dom";
 
 const ProtectedRoute = ({ children }) => {
-  const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+  const isLoggedIn = sessionStorage.getItem("isLoggedIn") === "true";
 
   // If not logged in → redirect to login
   if (!isLoggedIn) {
