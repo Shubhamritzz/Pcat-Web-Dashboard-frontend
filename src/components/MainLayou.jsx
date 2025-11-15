@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import Sidebar from './Sidebar'
 import { Outlet } from 'react-router-dom'
-import { Menu, X } from 'lucide-react'
+import { Menu, ArrowLeft } from 'lucide-react'
 
 function MainLayout() {
     const [sidebarOpen, setSidebarOpen] = useState(false)
@@ -19,11 +19,11 @@ function MainLayout() {
             {/* Mobile Toggle Button */}
             <button
                 onClick={toggleSidebar}
-                className="fixed top-4 left-4 z-50 md:hidden p-2 rounded-lg bg-white shadow-lg hover:bg-gray-100 transition-colors"
+                className=" top-4 left-4 z-50 md:hidden p-2 bg-white shadow-lg hover:bg-gray-100 transition-colors"
                 aria-label="Toggle sidebar"
             >
                 {sidebarOpen ? (
-                    <X className="w-6 h-6 text-gray-800" />
+                    <ArrowLeft className="w-6 h-6 text-gray-800" />
                 ) : (
                     <Menu className="w-6 h-6 text-gray-800" />
                 )}
@@ -40,7 +40,7 @@ function MainLayout() {
             {/* Sidebar */}
             <div
                 className={`fixed md:relative md:block w-64 h-screen bg-white shadow-lg transition-transform duration-300 ease-in-out z-40 
-                ${sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}
+                ${sidebarOpen ? 'translate-x-10' : '-translate-x-full md:translate-x-0'}`}
             >
                 <Sidebar onClose={closeSidebar} />
             </div>
