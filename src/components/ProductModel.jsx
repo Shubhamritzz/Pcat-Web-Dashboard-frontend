@@ -228,11 +228,13 @@ export default function ProductModel({ isOpen, onClose, fetchProducts, editingPr
                             required
                         >
                             <option value="">Select Category</option>
-                            {categories.map((cat, idx) => (
-                                <option key={idx} value={cat.title}>
-                                    {cat.title}
-                                </option>
-                            ))}
+                            {categories
+                        .filter((cat) => cat.subItems && cat.subItems.length > 0)
+                        .map((cat) => (
+                            <option key={cat.title} value={cat.title}>
+                                {cat.title}
+                            </option>
+                        ))}
                         </select>
                     </div>
 
@@ -283,21 +285,6 @@ export default function ProductModel({ isOpen, onClose, fetchProducts, editingPr
                         />
                     </div>
 
-                    <div>
-                        <label htmlFor="url" className={labelStyle}>
-                            URL
-                        </label>
-                        <div className="relative">
-                            <input
-                                id="url"
-                                value={form.url}
-                                onChange={(e) => handleChanges("url", e.target.value)}
-                                className={inputStyle + " pl-8"}
-                                placeholder="/products/item-slug"
-                            />
-                            <Link className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-blue-500" />
-                        </div>
-                    </div>
 
                     <ImageDropzone
                         name="hoverImage"

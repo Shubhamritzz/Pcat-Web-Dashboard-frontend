@@ -9,7 +9,6 @@ import { Trash2, Edit, Plus, Search, Layers, Loader2 } from "lucide-react";
 import { toast } from "react-toastify";
 import Pagination from "../components/Pagination";
 
-
 const ProductModel = lazy(() => import("../components/ProductModel"));
 
 function Products() {
@@ -21,6 +20,9 @@ function Products() {
     const [editingProduct, setEditingProduct] = useState(null);
     const [submenus, setSubmenus] = useState([]);
     const [categories, setCategories] = useState([]);
+    const [selectedCategory, setSelectedCategory] = useState("");
+    const [selectedSubmenu, setSelectedSubmenu] = useState("");
+
     const [searchTerm, setSearchTerm] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 8;
@@ -65,6 +67,10 @@ function Products() {
         }
     }, []);
 
+    useEffect(() => {
+        fetchMenuData();
+    }, []);
+
     // Delete product
     const handleDeleteProduct = useCallback(async (id) => {
         if (!window.confirm("Are you sure you want to delete this product?"))
@@ -82,13 +88,24 @@ function Products() {
         }
     }, []);
 
-    // Filter + paginate (no useMemo)
-    const filteredProducts = productData.filter((p) =>
-        p.title?.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    // FILTERING UPDATED: title + category + submenu
+    const filteredProducts = productData.filter((p) => {
+        const titleMatch = p.title
+            ?.toLowerCase()
+            .includes(searchTerm.toLowerCase());
+
+        const categoryMatch = selectedCategory
+            ? p.category === selectedCategory
+            : true;
+
+        const submenuMatch = selectedSubmenu
+            ? p.submenu === selectedSubmenu
+            : true;
+
+        return titleMatch && categoryMatch && submenuMatch;
+    });
 
     const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
-
     const start = (currentPage - 1) * itemsPerPage;
     const currentProducts = filteredProducts.slice(start, start + itemsPerPage);
 
@@ -96,12 +113,14 @@ function Products() {
         if (page >= 1 && page <= totalPages) setCurrentPage(page);
     };
 
+    // Reset pagination when filters change
     useEffect(() => {
         setCurrentPage(1);
-    }, [searchTerm]);
+    }, [searchTerm, selectedCategory, selectedSubmenu]);
 
     return (
         <div className="bg-gray-50 min-h-full rounded-2xl shadow-lg p-6 md:p-10 border border-gray-100 transition-all">
+
             {/* Header */}
             <header className="flex items-center gap-3 mb-8 pb-4 border-b border-blue-100">
                 <Layers className="w-8 h-8 text-blue-600" />
@@ -111,17 +130,58 @@ function Products() {
             </header>
 
             {/* Search + Add */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+            <div className="flex flex-col md:flex-row md:items-center justify-between items-center gap-4 mb-8">
                 <div className="relative flex-grow md:w-80">
                     <input
                         type="search"
-                        placeholder="Search products..."
+                        placeholder="Search products by title..."
                         className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-4 focus:ring-blue-100 shadow-sm"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
                     <Search className="absolute left-4 top-3.5 text-gray-400 w-5 h-5" />
                 </div>
+
+                {/* Category + Submenu Filters */}
+            <div className="flex flex-col md:flex-row gap-4">
+
+                {/* Category Dropdown */}
+                <select
+                    className="border z-50 p-3 rounded-xl bg-white shadow-sm"
+                    value={selectedCategory}
+                    onChange={(e) => {
+                        setSelectedCategory(e.target.value);
+                        setSelectedSubmenu("");
+                    }}
+                >
+                    <option value="">All Categories</option>
+                    {categories
+                        .filter((cat) => cat.subItems && cat.subItems.length > 0)
+                        .map((cat) => (
+                            <option key={cat.title} value={cat.title}>
+                                {cat.title}
+                            </option>
+                        ))}
+                </select>
+
+                {/* Submenu Dropdown */}
+                <select
+                    className="border p-3 rounded-xl bg-white shadow-sm disabled:opacity-50"
+                    value={selectedSubmenu}
+                    onChange={(e) => setSelectedSubmenu(e.target.value)}
+                    disabled={!selectedCategory}
+                >
+                    <option value="">All Submenus</option>
+
+                    {submenus
+                        .filter((s) => s.parent === selectedCategory)
+                        .map((sub) => (
+                            <option key={sub.title} value={sub.title}>
+                                {sub.title}
+                            </option>
+                        ))}
+                </select>
+            </div>
 
                 <button
                     onClick={() => setOpen(true)}
@@ -130,6 +190,8 @@ function Products() {
                     <Plus className="w-5 h-5 mr-2" /> Add Product
                 </button>
             </div>
+
+            
 
             {/* Table */}
             <div className="overflow-x-auto border rounded-xl border-gray-200 shadow-md">
@@ -141,7 +203,6 @@ function Products() {
                                 "Submenu",
                                 "Title",
                                 "Description",
-                                "URL",
                                 "Hover",
                                 "View",
                                 "Actions",
@@ -180,9 +241,7 @@ function Products() {
                                     <td className="p-3 text-gray-600 truncate max-w-[200px]">
                                         {product.description}
                                     </td>
-                                    <td className="p-3 text-blue-500 truncate max-w-[150px]">
-                                        {product.url}
-                                    </td>
+                                    
                                     <td className="p-3">
                                         <img
                                             src={product.hoverImage}
@@ -241,21 +300,20 @@ function Products() {
 
             {/* Product Modal (Lazy-loaded) */}
             {open && (
-                
-                    <ProductModel
-                        isOpen={open}
-                        onClose={() => {
-                            setOpen(false);
-                            setEditingProduct(null);
-                        }}
-                        fetchProducts={fetchProducts}
-                        editingProduct={editingProduct}
-                        fetchMenuData={fetchMenuData}
-                        submenus={submenus}
-                        setSubmenus={setSubmenus}
-                        categories={categories}
-                        setCategories={setCategories}
-                    />
+                <ProductModel
+                    isOpen={open}
+                    onClose={() => {
+                        setOpen(false);
+                        setEditingProduct(null);
+                    }}
+                    fetchProducts={fetchProducts}
+                    editingProduct={editingProduct}
+                    fetchMenuData={fetchMenuData}
+                    submenus={submenus}
+                    setSubmenus={setSubmenus}
+                    categories={categories}
+                    setCategories={setCategories}
+                />
             )}
         </div>
     );
