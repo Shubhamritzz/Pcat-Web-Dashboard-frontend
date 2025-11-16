@@ -15,6 +15,7 @@ const Sidebar = () => {
     { name: 'Navbar', icon: LayoutDashboard, to: '/navbar' },
     { name: 'Products', icon: Layers, to: '/products' },
     { name: 'Seo', icon: Layers, to: '/seo' },
+    { name: 'SingleProduct', icon: Layers, to: '/singleproduct' },
   ];
 
  const [activeItem, setActiveItem] = useState('Navbar');
@@ -40,10 +41,10 @@ const Sidebar = () => {
         {/* Header / Profile Section */}
         <div className="p-5 h-20 flex items-center space-x-3 border-b border-slate-700">
           <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white text-xl font-bold shrink-0">
-            A
+            P
           </div>
           <div>
-            <p className="text-white text-base font-semibold">Admin Panel</p>
+            <p className="text-white text-base font-semibold">Precision Scientific</p>
             <p className="text-xs text-gray-400">Welcome, Admin</p>
           </div>
         </div>

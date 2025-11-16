@@ -10,6 +10,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Products from "./Pages/Products";
 import Seo from "./Pages/Seo";
+import SingleProduct from "./Pages/SingleProduct";
 
 
 
@@ -41,6 +42,7 @@ function App() {
           <Route path="/navbar" element={<Navbar />} />
           <Route path="/products" element={<Products />} />
           <Route path="/seo" element={<Seo />} />
+          <Route path="/singleproduct" element={<SingleProduct />} />
 
         </Route>
       </Routes>
