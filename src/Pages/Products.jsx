@@ -203,7 +203,7 @@ function Products() {
                                 "Submenu",
                                 "Title",
                                 "Description",
-                                "Hover",
+                                
                                 "View",
                                 "Actions",
                             ].map((h) => (
@@ -242,13 +242,7 @@ function Products() {
                                         {product.description}
                                     </td>
                                     
-                                    <td className="p-3">
-                                        <img
-                                            src={product.hoverImage}
-                                            alt="Hover"
-                                            className="w-10 h-10 rounded object-cover"
-                                        />
-                                    </td>
+                                    
                                     <td className="p-3">
                                         <img
                                             src={product.viewImage}
