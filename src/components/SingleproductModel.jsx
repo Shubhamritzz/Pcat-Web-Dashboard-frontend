@@ -18,29 +18,26 @@ export default function SingleProductModel({
     const [filteredSubmenus, setFilteredSubmenus] = useState([]);
     const [filteredProductNames, setFilteredProductNames] = useState([]);
 
-    
+
 
     const [form, setForm] = useState({
         category: "",
         submenu: "",
         productName: "",
-        title: "",
-        title2: "",
         description: "",
-        description2: "",
-        bannerImage: null,
-        bannerImagePreview: null,
-        productDetails: [],
+        images: [],
+        specifications: [],
+        keyFeatures: [],
     });
 
-   
-    
+
+
 
     const fetchAllProducts = async () => {
         try {
             const res = await api.get("/products/getproduct");
             // console.log(res);
-            
+
             setProducts(res.data.data);
         } catch (err) {
             console.log(err);
@@ -54,51 +51,77 @@ export default function SingleProductModel({
 
 
     // Prefill form for editing
-    
+
+    // useEffect(() => {
+    //     if (editingSingleProduct) {
+    //         setForm({
+    //             category: editingSingleProduct.category || "",
+    //             submenu: editingSingleProduct.submenu || "",
+    //             productName: editingSingleProduct.productName || "",
+
+    //             images: editingSingleProduct.images || [],
+    //             specifications: editingSingleProduct.specifications || [],
+    //             keyFeatures: editingSingleProduct.keyFeatures || [],
+
+    //             description: editingSingleProduct.description || "",
+
+
+    //         });
+
+
+    //     } else {
+    //         setForm({
+    //             category: "",
+    //             submenu: "",
+    //             productName: "",
+    //             description: "",
+    //             images: [],
+    //             specifications: [],
+    //             keyFeatures: [],
+
+
+    //         });
+    //     }
+    // }, [editingSingleProduct]);
+
     useEffect(() => {
         if (editingSingleProduct) {
             setForm({
                 category: editingSingleProduct.category || "",
                 submenu: editingSingleProduct.submenu || "",
                 productName: editingSingleProduct.productName || "",
-
-                title: editingSingleProduct.title || "",
-                title2: editingSingleProduct.title2 || "",
                 description: editingSingleProduct.description || "",
-                description2: editingSingleProduct.description2 || "",
 
-                bannerImage: null,
-                bannerImagePreview: editingSingleProduct.bannerImage || null,
+                // FIX 1: Convert image URLs → { file:null, preview:url }
+                images: (editingSingleProduct.Images || []).map(img => ({
+                    file: null,
+                    preview: img
+                })),
 
-                // FIX DETAIL IMAGES PREVIEW
-                productDetails: editingSingleProduct.productDetails?.map(d => ({
-                    title: d.title,
-                    description: d.description,
-                    productimage: null,
-                    preview: d.productimage || null
-                })) || [],
+                // FIX 2: Convert specifications to your UI structure
+                specifications: (editingSingleProduct.Specifications || []).map(spec => ({
+                    specTitle: spec.specTitle || "",
+                    specDesc: spec.specDesc || ""
+                })),
+
+                // FIX 3: Convert keyFeatures if required
+                keyFeatures: (editingSingleProduct.KeyFeatures || []).map(f => f)
             });
-
-
         } else {
             setForm({
                 category: "",
                 submenu: "",
                 productName: "",
-                title: "",
-                title2: "",
                 description: "",
-                description2: "",
-                bannerImage: null,
-                bannerImagePreview: null,
-                productDetails: [],
+                images: [],
+                specifications: [],
+                keyFeatures: [],
             });
         }
     }, [editingSingleProduct]);
 
-    
     // Filter submenus based on category
-    
+
     useEffect(() => {
         if (form.category) {
             const filtered = submenus.filter((s) => s.parent === form.category);
@@ -112,9 +135,9 @@ export default function SingleProductModel({
         }
     }, [form.category, submenus]);
 
-    
+
     // Filter PRODUCT NAMES based on category + submenu
-    
+
     useEffect(() => {
         if (form.category && form.submenu) {
             const filtered = products.filter(
@@ -128,86 +151,18 @@ export default function SingleProductModel({
         }
     }, [form.category, form.submenu, products]);
 
-    
+
     // Handle input field change
-    
+
     const handleChanges = (id, value) => {
         setForm((prev) => ({ ...prev, [id]: value }));
     };
 
-    
-    // Image upload logic
-    
-    const handleFileChange = (e, field) => {
-        const file = e.target.files[0];
-        if (file) {
-            const preview = URL.createObjectURL(file);
-            setForm((prev) => ({
-                ...prev,
-                [field]: file,
-                [`${field}Preview`]: preview,
-            }));
-        }
-    };
 
-    
-    // Remove banner image preview
-    
-    const handleImageDelete = () => {
-        setForm((prev) => ({
-            ...prev,
-            bannerImage: null,
-            bannerImagePreview: null,
-        }));
-    };
 
-    
-    // Add item to productDetails[]
-    
-    const addDetail = () => {
-        setForm((prev) => ({
-            ...prev,
-            productDetails: [
-                ...prev.productDetails,
-                { title: "", description: "", productimage: null, preview: null },
-            ],
-        }));
-    };
 
-    
-    // Handle individual detail updates
-    
-    const updateDetail = (index, key, value) => {
-        const updated = [...form.productDetails];
-        updated[index][key] = value;
-        setForm((prev) => ({ ...prev, productDetails: updated }));
-    };
-
-    const updateDetailImage = (index, file) => {
-        if (!file) { 
-            const updated = [...form.productDetails];
-            updated[index].productimage = null;
-            updated[index].preview = null;
-            setForm((prev) => ({ ...prev, productDetails: updated }));
-            return;
-        }
-
-        const preview = URL.createObjectURL(file);
-        const updated = [...form.productDetails];
-        updated[index].productimage = file;
-        updated[index].preview = preview;
-        setForm((prev) => ({ ...prev, productDetails: updated }));
-    };
-
-    const removeDetail = (index) => {
-        const updated = [...form.productDetails];
-        updated.splice(index, 1);
-        setForm((prev) => ({ ...prev, productDetails: updated }));
-    };
-
-    
     // Submit form
-    
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setSending(true);
@@ -215,29 +170,36 @@ export default function SingleProductModel({
         try {
             const formData = new FormData();
 
+            // IMAGES
+            form.images?.forEach((img) => {
+                if (img.file) {
+                    // new images
+                    formData.append("Images", img.file);
+                } else {
+                    // old existing images
+                    formData.append("ExistingImages[]", img.preview);
+                }
+            });
+
+
+            // SPECIFICATIONS
+            form.specifications?.forEach((spec, index) => {
+                formData.append(`Specifications[${index}].specTitle`, spec.specTitle);
+                formData.append(`Specifications[${index}].specDesc`, spec.specDesc);
+            });
+
+            // KEY FEATURES
+            form.keyFeatures?.forEach((feat, index) => {
+                formData.append(`KeyFeatures[${index}]`, feat);
+            });
+
+
             formData.append("category", form.category);
             formData.append("submenu", form.submenu);
             formData.append("productName", form.productName);
-            formData.append("title", form.title);
-            formData.append("title2", form.title2);
             formData.append("description", form.description);
-            formData.append("description2", form.description2);
 
-            if (form.bannerImage) {
-                formData.append("bannerImage", form.bannerImage);
-            }
 
-            form.productDetails.forEach((item, idx) => {
-                formData.append(`productDetails[${idx}].title`, item.title);
-                formData.append(`productDetails[${idx}].description`, item.description);
-
-                if (item.productimage instanceof File) {
-                    formData.append(
-                        `productDetails[${idx}].productimage`,
-                        item.productimage
-                    );
-                }
-            });
 
             const endpoint = editingSingleProduct
                 ? `/singleproduct/updatesingleproduct/${editingSingleProduct._id}`
@@ -306,6 +268,7 @@ export default function SingleProductModel({
                     accept="image/*"
                     onChange={onChange}
                     className="absolute inset-0 opacity-0 cursor-pointer"
+                    style={{ pointerEvents: preview ? "none" : "auto" }}
                 />
             </div>
         </div>
@@ -393,44 +356,188 @@ export default function SingleProductModel({
                         </select>
                     </div>
 
-                    {/* TITLE 1 */}
-                    <div>
-                        <label htmlFor="title" className={labelStyle}>Title *</label>
-                        <input
-                            id="title"
-                            className={inputStyle}
-                            value={form.title}
-                            onChange={(e) => handleChanges("title", e.target.value)}
-                            placeholder="Main Product Title"
-                            required
-                        />
+
+                    {/* IMAGES SECTION */}
+                    <div className="md:col-span-2 lg:col-span-3">
+                        <label className={labelStyle}>Product Images {editingSingleProduct && 'Image will be replace'}</label>
+
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
+                            {form.images?.map((img, index) => (
+                                <ImageDropzone
+                                    key={index}
+                                    name={`image-${index}`}
+                                    label={`Image ${index + 1}`}
+                                    preview={img.preview}
+                                    
+                                    onChange={(e) => {
+                                        e.stopPropagation();
+                                        const file = e.target.files[0];
+                                        if (!file) return;
+
+                                        const preview = URL.createObjectURL(file);
+
+                                        setForm(prev => {
+                                            const updated = [...prev.images];
+
+                                            // If empty placeholder image → replace it
+                                            if (!updated[index].preview && !updated[index].file) {
+                                                updated[index] = { file, preview };
+                                            } else {
+                                                // Otherwise add new image at the end
+                                                updated.push({ file, preview });
+                                            }
+
+                                            return { ...prev, images: updated };
+                                        });
+                                    }}
+
+                                    onDelete={(e) => {
+                                        e.stopPropagation();
+                                        const updated = [...form.images];
+                                        updated.splice(index, 1);
+                                        setForm(prev => ({ ...prev, images: updated }));
+                                    }}
+                                />
+                            ))}
+
+                            <button
+                                type="button"
+                                onClick={() =>
+                                    setForm(prev => ({
+                                        ...prev,
+                                        images: [...(prev.images || []), { file: null, preview: '' }]
+                                    }))
+                                }
+                                className="p-3 border border-blue-400 text-blue-600 rounded-lg hover:bg-blue-50 transition flex items-center justify-center"
+                            >
+                                <Plus className="w-5 h-5" />
+                            </button>
+                        </div>
                     </div>
 
-                    {/* TITLE 2 */}
-                    <div>
-                        <label htmlFor="title2" className={labelStyle}>Title 2</label>
-                        <input
-                            id="title2"
-                            className={inputStyle}
-                            value={form.title2}
-                            onChange={(e) => handleChanges("title2", e.target.value)}
-                            placeholder="Optional secondary title"
-                        />
+
+                    {/* SPECIFICATIONS */}
+                    <div className="md:col-span-2 lg:col-span-3">
+                        <label className={labelStyle}>Specifications</label>
+
+                        {form.specifications?.map((spec, index) => (
+                            <div key={index} className="grid grid-cols-1 md:grid-cols-2 gap-4 border p-4 rounded-lg mb-3">
+
+                                {/* Title */}
+                                <div>
+                                    <label className={labelStyle}>Title</label>
+                                    <input
+                                        type="text"
+                                        className={inputStyle}
+                                        value={spec.specTitle}
+                                        onChange={(e) => {
+                                            const updated = [...form.specifications];
+                                            updated[index].specTitle = e.target.value;
+                                            setForm(prev => ({ ...prev, specifications: updated }));
+                                        }}
+                                    />
+                                </div>
+
+                                {/* Description */}
+                                <div>
+                                    <label className={labelStyle}>Description</label>
+                                    <input
+                                        type="text"
+                                        className={inputStyle}
+                                        value={spec.specDesc}
+                                        onChange={(e) => {
+                                            const updated = [...form.specifications];
+                                            updated[index].specDesc = e.target.value;
+                                            setForm(prev => ({ ...prev, specifications: updated }));
+                                        }}
+                                    />
+                                </div>
+
+                                {/* Delete */}
+
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        const updated = [...form.specifications];
+                                        updated.splice(index, 1);
+                                        setForm(prev => ({ ...prev, specifications: updated }));
+                                    }}
+                                    className="p-2 bg-red-600 text-white rounded-full hover:bg-red-700 h-8 w-8 flex items-center justify-center"
+                                >
+                                    <Trash2 className="w-4 h-4" />
+                                </button>
+                            </div>
+                        ))}
+
+                        <button
+                            type="button"
+                            onClick={() =>
+                                setForm(prev => ({
+                                    ...prev,
+                                    specifications: [
+                                        ...(prev.specifications || []),
+                                        { specTitle: "", specDesc: "" }
+                                    ]
+                                }))
+                            }
+                            className="px-4 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 flex items-center gap-2"
+                        >
+                            <Plus className="w-4 h-4" /> Add Specification
+                        </button>
                     </div>
 
-                    {/* BANNER IMAGE */}
-                    <ImageDropzone
-                        name="bannerImage"
-                        label="Banner Image"
-                        preview={form.bannerImagePreview}
-                        onChange={(e) => handleFileChange(e, "bannerImage")}
-                        onDelete={handleImageDelete}
-                        containerClass="lg:col-span-1"
-                    />
+                    {/* KEY FEATURES */}
+                    <div className="md:col-span-2 lg:col-span-3">
+                        <label className={labelStyle}>Key Features</label>
+
+                        {form.keyFeatures?.map((feat, index) => (
+                            <div key={index} className="flex items-center gap-3 mb-3">
+
+                                <input
+                                    type="text"
+                                    className={inputStyle}
+                                    value={feat}
+                                    onChange={(e) => {
+                                        const updated = [...form.keyFeatures];
+                                        updated[index] = e.target.value;
+                                        setForm(prev => ({ ...prev, keyFeatures: updated }));
+                                    }}
+                                    placeholder={`Feature ${index + 1}`}
+                                />
+
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        const updated = [...form.keyFeatures];
+                                        updated.splice(index, 1);
+                                        setForm(prev => ({ ...prev, keyFeatures: updated }));
+                                    }}
+                                    className="p-2 bg-red-600 text-white rounded-full hover:bg-red-700"
+                                >
+                                    <Trash2 className="w-4 h-4" />
+                                </button>
+                            </div>
+                        ))}
+
+                        <button
+                            type="button"
+                            onClick={() =>
+                                setForm(prev => ({
+                                    ...prev,
+                                    keyFeatures: [...(prev.keyFeatures || []), ""]
+                                }))
+                            }
+                            className="px-4 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 flex items-center gap-2"
+                        >
+                            <Plus className="w-4 h-4" /> Add Feature
+                        </button>
+                    </div>
+
+
 
                     {/* DESCRIPTION 1 */}
                     <div className="md:col-span-2 lg:col-span-3">
-                        <label htmlFor="description" className={labelStyle}>Description 1</label>
+                        <label htmlFor="description" className={labelStyle}>Description </label>
                         <textarea
                             id="description"
                             className={inputStyle + " h-20 resize-none"}
@@ -440,89 +547,8 @@ export default function SingleProductModel({
                         ></textarea>
                     </div>
 
-                    {/* DESCRIPTION 2 */}
-                    <div className="md:col-span-2 lg:col-span-3">
-                        <label htmlFor="description2" className={labelStyle}>Description 2</label>
-                        <textarea
-                            id="description2"
-                            className={inputStyle + " h-20 resize-none"}
-                            value={form.description2}
-                            onChange={(e) => handleChanges("description2", e.target.value)}
-                            placeholder="Enter secondary product description"
-                        ></textarea>
-                    </div>
 
 
-                    {/* PRODUCT DETAILS SECTION */}
-                    <div className="md:col-span-2 lg:col-span-3 border-t pt-4 border-gray-100">
-                        <div className="flex justify-between items-center mb-4">
-                            <h3 className="text-xl font-bold text-gray-800 flex items-center gap-2">
-                                <Link className="w-5 h-5" /> Product Details (Sections)
-                            </h3>
-                            <button
-                                type="button"
-                                onClick={addDetail}
-                                className="bg-blue-600 text-white px-4 py-2 rounded-full flex gap-2 items-center hover:bg-blue-700 transition"
-                            >
-                                <Plus className="w-5 h-5" /> Add Detail Section
-                            </button>
-                        </div>
-
-                        {form.productDetails.map((item, index) => (
-                            <div key={index} className="border border-blue-200 bg-blue-50/30 p-4 rounded-xl mb-4 relative">
-                                <h4 className="text-md font-semibold mb-3 text-blue-700">Detail Section #{index + 1}</h4>
-
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                                    {/* TITLE */}
-                                    <div className="md:col-span-2">
-                                        <label htmlFor={`detail-title-${index}`} className={labelStyle}>Detail Title</label>
-                                        <input
-                                            id={`detail-title-${index}`}
-                                            className={inputStyle}
-                                            placeholder="Section Title"
-                                            value={item.title}
-                                            onChange={(e) => updateDetail(index, "title", e.target.value)}
-                                        />
-                                    </div>
-
-                                    {/* IMAGE UPLOAD */}
-                                    <ImageDropzone
-                                        name={`detail-image-${index}`}
-                                        label="Upload Detail Image"
-                                        preview={item.preview}
-                                        onChange={(e) => updateDetailImage(index, e.target.files[0])}
-                                        onDelete={() => updateDetailImage(index, null)}
-                                        hideLabel={true}
-                                    />
-                                </div>
-
-
-                                {/* DESCRIPTION */}
-                                <div className="mt-3">
-                                    <label htmlFor={`detail-description-${index}`} className={labelStyle}>Detail Description</label>
-                                    <textarea
-                                        id={`detail-description-${index}`}
-                                        className={inputStyle + " h-20 resize-none"}
-                                        placeholder="Section Description"
-                                        value={item.description}
-                                        onChange={(e) =>
-                                            updateDetail(index, "description", e.target.value)
-                                        }
-                                    ></textarea>
-                                </div>
-
-                                {/* REMOVE BUTTON */}
-                                <button
-                                    type="button"
-                                    onClick={() => removeDetail(index)}
-                                    className="absolute top-1 right-1 p-2 bg-red-600 text-white rounded-full hover:bg-red-700 transition shadow-md"
-                                    title="Remove Detail Section"
-                                >
-                                    <Trash2 className="w-4 h-4" />
-                                </button>
-                            </div>
-                        ))}
-                    </div>
 
                     {/* SUBMIT BUTTONS */}
                     <div className="flex justify-end gap-3 mt-4 pt-4 border-t border-gray-100 md:col-span-2 lg:col-span-3">

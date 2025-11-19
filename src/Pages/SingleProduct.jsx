@@ -32,7 +32,7 @@ function SingleProducts() {
         try {
             const res = await api.get("/singleproduct/getsingleproducts");
             setProductData(res.data.data || []);
-            // console.log(res.data.data ,'single peoducts all data');
+            console.log(res.data.data ,'single peoducts all data');
             
             setError(null);
         } catch (err) {
@@ -202,7 +202,7 @@ function SingleProducts() {
                                 "Submenu",
                                 "Product Name",
 
-                                "Banner Image",
+                                "Image",
                                 "Actions",
                             ].map((h) => (
                                 <th key={h} className="p-5 text-left text-md font-bold text-blue-700 uppercase">{h}</th>
@@ -229,9 +229,9 @@ function SingleProducts() {
 
                                     <td className="p-3">
                                         <img
-                                            src={item.bannerImage}
+                                            src={item.Images[0]}
                                             className="w-14 h-14 rounded object-cover"
-                                            alt="banner"
+                                            alt={item.productName}
                                         />
                                     </td>
 
